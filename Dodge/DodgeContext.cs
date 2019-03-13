@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Automation;
 
 namespace Dodge
 {
@@ -45,6 +46,14 @@ namespace Dodge
             };
 
             _notifyIcon.ContextMenuStrip.Opening += ContextMenuStrip_Opening;
+
+            var handler = new AutomationFocusChangedEventHandler(OnFocusChanged);
+            Automation.AddAutomationFocusChangedEventHandler(handler);
+        }
+
+        private void OnFocusChanged(object sender, AutomationFocusChangedEventArgs e)
+        {
+            var child = e.ChildId;
         }
 
         private void StartDodgingItemOnClick(object sender, EventArgs e)
