@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DodgeContext.cs" />
+    <Compile Include="DodgeController.cs" />
     <Compile Include="DodgeState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
