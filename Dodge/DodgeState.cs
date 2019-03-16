@@ -11,24 +11,31 @@ namespace Dodge
         /// <summary>
         /// Gets the PID of the process the app is trying to keep in view
         /// </summary>
-        public int DodgingProcess { get; private set; } = -1;
+        public IntPtr DodgingProcess { get; private set; }
 
         /// <summary>
         /// Gets if the application is currently trying to keep a process in view
         /// </summary>
-        public bool TryingToDodge => DodgingProcess != -1;
+        public bool TryingToDodge => DodgingProcess != IntPtr.Zero;
 
-        public void UpdateProcess(int process)
+        /// <summary>
+        /// Gets if the application is waiting for the user to click on a window to dodge
+        /// </summary>
+        public bool WaitingForUserToAssignDodge { get; private set; }
+
+        public void ToggleWaiting()
         {
-            if (process < 0)
-                throw new ArgumentOutOfRangeException(nameof(process));
+            WaitingForUserToAssignDodge = !WaitingForUserToAssignDodge;
+        }
 
-            DodgingProcess = process;
+        public void UpdateProcess(IntPtr processHandle)
+        {
+            DodgingProcess = processHandle;
         }
 
         public void StopDodging()
         {
-            DodgingProcess = -1;
+            DodgingProcess = IntPtr.Zero;
         }
     }
 }
