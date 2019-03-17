@@ -29,6 +29,9 @@ namespace Dodge
         [DllImport("user32.dll")]
         private static extern bool IsIconic(IntPtr handle);
 
+        [DllImport("user32.dll")]
+        private static extern bool IsZoomed(IntPtr handle);
+
         [DllImport("user.dll")]
         private static extern bool IsWindowVisible(IntPtr handle);
 
@@ -101,18 +104,41 @@ namespace Dodge
             if (IsWindowVisible(_state.DodgingProcess))
                 return;
 
-            // find out the bounds of the focused process
-            GetWindowRect(focusedHandle, out var focusedBounds);
+            // find out if focused window is maximised
+            var focusedMaximised = IsZoomed(focusedHandle);
 
-            // if it's taking up 100% of screen, don't go further
+            if (focusedMaximised)
+            {
+                // if we have multiple screens to use, just translate the dodge window to the second one
+                if (Screen.AllScreens.Length > 1)
+                {
+                    // get the current bounds of the dodging process
+
+                    // move it to screen 2 ([1]) keeping the same dimensions
+                    // https://www.tek-tips.com/viewthread.cfm?qid=1416749
+
+                    //SetWindowPos(_state.DodgingProcess, focusedHandle, 1, 1, 1, 1, 0);
+                }
+                // if there's only one screen we can't do anything
+            }
+            else
+            {
+                // find out the bounds of the focused process
+                GetWindowRect(focusedHandle, out var focusedBounds);
+
+                var screen = Screen.FromHandle(focusedHandle);
+
+                // if we can fit the dodge window on the same screen, we should use the same screen
+
+                // if we can't but we have more, just move it to the second screen (like if max)
+
+                // if no other screens, do nothing
+            }
 
             // the user should set an option for the minimum window they want to view 
             // find a location on the screen where we can fit the watched window
 
             // move the window to that location
-            SetWindowPos(_state.DodgingProcess, focusedHandle, 1, 1, 1, 1, 0);
-
-            var child = e.ChildId;
         }
 
         public void StopDodging()
